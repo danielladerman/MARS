@@ -376,8 +376,16 @@ const OutputCard: React.FC<{
   description: string;
 }> = ({ frame, fps, imageSrc, title, description }) => {
   const reveal = spring({ fps, frame, config: { damping: 200, mass: 0.7 } });
-  const scale = interpolate(reveal, [0, 1], [0.94, 1]);
-  const lift = interpolate(reveal, [0, 1], [28, 0]);
+  const scale = interpolate(reveal, [0, 1], [0.92, 1]);
+  const lift = interpolate(reveal, [0, 1], [32, 0]);
+  const baseRotate = interpolate(reveal, [0, 1], [-14, -6]);
+  const floatRotate = interpolate(frame, [0, 90], [-4, 4], {
+    extrapolateLeft: "clamp",
+    extrapolateRight: "clamp",
+  });
+  const rotateY = baseRotate + floatRotate;
+  const rotateX = interpolate(reveal, [0, 1], [9, 3]);
+  const glow = interpolate(reveal, [0, 1], [0.2, 0.65]);
 
   return (
     <div
@@ -390,11 +398,11 @@ const OutputCard: React.FC<{
     >
       <div
         style={{
-          transform: `translateY(${lift}px) scale(${scale}) perspective(1600px) rotateY(-6deg)`,
-          boxShadow: "0 40px 100px rgba(0,0,0,0.55)",
-          borderRadius: 22,
+          transform: `translateY(${lift}px) scale(${scale}) perspective(1800px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+          boxShadow: `0 50px 130px rgba(0,0,0,0.6)`,
+          borderRadius: 24,
           overflow: "hidden",
-          border: "1px solid rgba(255,255,255,0.2)",
+          border: `1px solid rgba(255,255,255,${glow})`,
         }}
       >
         <BrowserFrame title={imageSrc}>
@@ -483,7 +491,7 @@ export const MyComposition: React.FC = () => {
   const clockWipePresentation = clockWipe({ width, height });
 
   return (
-    <AbsoluteFill>
+    <AbsoluteFill style={{ background: COLOR.ink }}>
       <Audio
         src={staticFile(
           "female.mp3"
@@ -533,7 +541,7 @@ export const MyComposition: React.FC = () => {
           <Kicker label="Two Workflow Orchestration" />
           <HeroTitle
             title="Competitive intelligence to creative strategy"
-            subtitle="Workflow 1 builds the market map. Workflow 2 turns insights into creative playbooks."
+            subtitle="From 22 days to 4 hours."
           />
           <div style={{ marginTop: 28 }}>
             <WorkflowLanes frame={orchestrationFrame} fps={fps} />
