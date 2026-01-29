@@ -6,3 +6,8 @@ node_modules/
 dist/
 .idea/
 .vscode/
+my-video/.agent/
+my-video/.claude/
+my-video/.cursor/
+my-video/.gemini/
+my-video/.opencode/
